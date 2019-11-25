@@ -7,14 +7,19 @@ const hub = signalhub(room, ["https://rtc-saitejahub.herokuapp.com/"]);
 
 const swarm = createSwarm(hub);
 
+var names = {};
+
 var p = document.createElement('p');
 document.body.appendChild(p);
 
 swarm.on('peer', (peer,id) => {
 	p.innerHTML+= "new connection "+JSON.stringify(id) + "<br>";
 	peer.on('data', (data) => {
-		data = JSON.parse()
-		p.innerHTML += "new data = " + data.toString() + "<br>"
+		data = JSON.parse(data)
+		if(data["type"]==="name"){
+			names[id] = data["value"]
+		} 
+		p.innerHTML += "new msg = " + data["value"].toString() + "<br>"
 	});
 });
 
