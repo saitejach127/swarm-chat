@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "browserify index.js > public/bundle.js && node server.js"
+    "start": "rm public/bundle.js && browserify index.js > public/bundle.js && node server.js"
   },
   "keywords": [],
   "author": "",
