@@ -1,70 +1,67 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-navigator.mediaDevices.getUserMedia({ video: true, audio : false }).then((stream) => {
-	const signalhub = require('signalhub');
-	const createSwarm = require('webrtc-swarm');
+// navigator.mediaDevices.getUserMedia({ video: true, audio : false }).then((stream) => {
+const signalhub = require('signalhub');
+const createSwarm = require('webrtc-swarm');
 
-	const room = prompt("room name = ");
+const room = prompt("room name = ");
+const name = prompt("Name = ")
 
-	const hub = signalhub(room, ["https://rtc-saitejahub.herokuapp.com/"]);
+const hub = signalhub('room', ["https://rtc-saitejahub.herokuapp.com/"]);
 
-	const swarm = createSwarm(hub, { stream:stream });
+const swarm = createSwarm(hub);
 
-	var names = {};
+var p = document.createElement('p');
+document.body.appendChild(p);
 
-	var p = document.createElement('p');
-	document.body.appendChild(p);
+swarm.on('peer', (peer,id) => {
+	p.innerHTML+= "new connection "+JSON.stringify(id) + "<br>";
 
-	swarm.on('peer', (peer,id) => {
-		p.innerHTML+= "new connection "+JSON.stringify(id) + "<br>";
+	// var vid = document.createElement('video');
+	// document.body.appendChild(vid);
+	// if ('srcObject' in vid) {
+	// 	vid.srcObject = peer.stream;
+	// 	} else {
+	// 	// Avoid using this in new browsers, as it is going away.
+	// 	vid.src = URL.createObjectURL(peer.stream);
+	// 	}
+	// vid.play();
+	// console.log(peer.stream)
+	// var h1 = document.createElement('h1');
+	// h1.innerHTML = JSON.stringify(id);
+	// document.body.appendChild(h1);
 
-		var vid = document.createElement('video');
-		document.body.appendChild(vid);
-		if ('srcObject' in vid) {
-			vid.srcObject = peer.stream;
-		  } else {
-			// Avoid using this in new browsers, as it is going away.
-			vid.src = URL.createObjectURL(peer.stream);
-		  }
-		vid.play();
-		console.log(peer.stream)
-		var h1 = document.createElement('h1');
-		h1.innerHTML = JSON.stringify(id);
-		document.body.appendChild(h1);
-
-		peer.on('data', (data) => {
-			data = JSON.parse(data)
-			if(data["type"]==="name"){
-				names[id] = data["value"]
-			} 
-			p.innerHTML += names[id] + " : " + data["value"].toString() + "<br>"
-		});
+	peer.on('data', (data) => {
+		data = JSON.parse(data.toString())
+		p.innerHTML += data["name"]+ " : " + data["value"].toString() + "<br>"
 	});
-
-
-	swarm.on('disconnect', (peer,id) => { p.innerHTML+= "disconnect connection "+JSON.stringify(id) + "<br>"; } )
-
-	var inp = document.createElement("input");
-	document.body.appendChild(inp);
-
-
-	var btn = document.createElement('button');
-	btn.innerHTML = "send"
-	document.body.appendChild(btn);
-	btn.onclick = () => {
-		swarm.peers.forEach((peer) => {
-			data = {"type":"msg", "value":inp.value};
-			peer.send(JSON.stringify(data));
-		})
-	}
-
-	var vidbtn = document.createElement('button');
-	vidbtn.innerHTML = 'video';
-	document.body.appendChild(vidbtn);
-	vidbtn.onclick = () => {
-		
-	}
-
 });
+
+
+swarm.on('disconnect', (peer,id) => { p.innerHTML+= "disconnect "+JSON.stringify(id) + "<br>"; } )
+
+var inp = document.createElement("input");
+document.body.appendChild(inp);
+
+
+var btn = document.createElement('button');
+btn.innerHTML = "send"
+document.body.appendChild(btn);
+btn.onclick = () => {
+	swarm.peers.forEach((peer) => {
+		data = {"type":"msg", "value":inp.value,"name":name};
+		p.innerHTML += data["name"]+ " : " + data["value"].toString() + "<br>"
+		peer.send(JSON.stringify(data));
+	})
+}
+
+var file = document.createElement("input");
+file.type = "file";
+document.body.appendChild(file);
+file.onchange = () => {
+	
+}
+
+// });
 
 },{"signalhub":30,"webrtc-swarm":43}],2:[function(require,module,exports){
 (function (Buffer){
