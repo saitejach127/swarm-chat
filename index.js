@@ -15,20 +15,6 @@ document.body.appendChild(p);
 swarm.on('peer', (peer,id) => {
 	p.innerHTML+= "new connection "+JSON.stringify(id) + "<br>";
 
-	// var vid = document.createElement('video');
-	// document.body.appendChild(vid);
-	// if ('srcObject' in vid) {
-	// 	vid.srcObject = peer.stream;
-	// 	} else {
-	// 	// Avoid using this in new browsers, as it is going away.
-	// 	vid.src = URL.createObjectURL(peer.stream);
-	// 	}
-	// vid.play();
-	// console.log(peer.stream)
-	// var h1 = document.createElement('h1');
-	// h1.innerHTML = JSON.stringify(id);
-	// document.body.appendChild(h1);
-
 	peer.on('data', (data) => {
 		data = JSON.parse(data.toString())
 		p.innerHTML += data["name"]+ " : " + data["value"].toString() + "<br>"
