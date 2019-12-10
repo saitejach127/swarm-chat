@@ -5,7 +5,7 @@ const createSwarm = require('webrtc-swarm');
 const room = prompt("room name = ");
 const name = prompt("Name = ")
 
-const hub = signalhub('room', ["https://rtc-saitejahub.herokuapp.com/"]);
+const hub = signalhub(room, ["https://rtc-saitejahub.herokuapp.com/"]);
 
 const swarm = createSwarm(hub);
 
