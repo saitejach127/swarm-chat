@@ -3,10 +3,10 @@
 const signalhub = require('signalhub');
 const createSwarm = require('webrtc-swarm');
 
-const room = prompt("room name = ");
-const name = prompt("Name = ")
+// const room = prompt("room name = ");
+// const name = prompt("Name = ")
 
-const hub = signalhub(room, ["https://rtc-saitejahub.herokuapp.com/"]);
+const hub = signalhub('room', ["https://rtc-saitejahub.herokuapp.com/"]);
 
 const swarm = createSwarm(hub);
 
@@ -15,20 +15,6 @@ document.body.appendChild(p);
 
 swarm.on('peer', (peer,id) => {
 	p.innerHTML+= "new connection "+JSON.stringify(id) + "<br>";
-
-	// var vid = document.createElement('video');
-	// document.body.appendChild(vid);
-	// if ('srcObject' in vid) {
-	// 	vid.srcObject = peer.stream;
-	// 	} else {
-	// 	// Avoid using this in new browsers, as it is going away.
-	// 	vid.src = URL.createObjectURL(peer.stream);
-	// 	}
-	// vid.play();
-	// console.log(peer.stream)
-	// var h1 = document.createElement('h1');
-	// h1.innerHTML = JSON.stringify(id);
-	// document.body.appendChild(h1);
 
 	peer.on('data', (data) => {
 		data = JSON.parse(data.toString())
@@ -57,8 +43,19 @@ btn.onclick = () => {
 var file = document.createElement("input");
 file.type = "file";
 document.body.appendChild(file);
-file.onchange = () => {
+file.onchange = (e) => {
+	var reader = new FileReader();
+	reader.onload = () => {
+		console.log(reader.result);
+		var obj = new Blob([reader.result]);
+		var url = window.URL.createObjectURL(obj);
+		var a = document.createElement('a');
+		a.href = url;
+		a.text = e.target.files[0].name
+		document.body.appendChild(a);
+	}
 	
+	reader.readAsArrayBuffer(e.target.files[0]);
 }
 
 // });
