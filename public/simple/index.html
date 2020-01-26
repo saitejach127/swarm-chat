@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Simple peer</title>
+</head>
+<body>
+    <p>ownid: </p>
+    <textarea id="ownid"></textarea>
+
+    <p>otherid: </p>
+    <textarea id="otherid"></textarea>
+ 
+    <button id="connect">Connect</button>
+    <button id="send">Send</button>
+    <button id="addStream">add</button>
+
+    <video src="#" id="vid"></video>
+    <hr>
+    <h1>Log   .............</h1>
+    <p id="log"></p>
+
+    <script src="simple-peer.min.js"></script>
+    <script>
+        // navigator.mediaDevices.getUserMedia({video:true, audio:true}).then((stream) => {
+        const peer = new SimplePeer({
+            initiator: location.hash === "#1",
+            trickle:false,
+	    // stream:stream
+        });
+        peer.on('error', err => log(err))
+
+        peer.on('signal', data => {
+            log('SIGNAL', JSON.stringify(data))
+            document.querySelector('#ownid').textContent = JSON.stringify(data)
+        })
+
+        document.getElementById("connect").onclick = () => {
+            peer.signal(JSON.parse(document.getElementById("otherid").value))
+        }
+
+        peer.on('connect', () => {
+            log('CONNECT')
+            peer.send('whatever' + Math.random())
+        })
+
+        document.getElementById("send").onclick = () => {
+            peer.send('whatever' + Math.random())
+        }
+
+        peer.on('data', data => {
+            log('data: ' + data)
+        })
+
+        peer.on('stream', (stream) => {
+            document.getElementById("vid").srcObject = stream;
+            document.getElementById("vid").play();
+        })
+        
+    // });
+
+    function log(data) {
+        document.getElementById("log").innerHTML += data.toString() + "<br>"
+    }
+
+    </script>
+</body>
+</html>
