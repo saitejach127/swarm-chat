@@ -3,10 +3,10 @@
 const signalhub = require('signalhub');
 const createSwarm = require('webrtc-swarm');
 
-// const room = prompt("room name = ");
-// const name = prompt("Name = ")
+const room = prompt("room name = ");
+const name = prompt("Name = ")
 
-const hub = signalhub('room', ["https://rtc-saitejahub.herokuapp.com/"]);
+const hub = signalhub(room, ["https://rtc-saitejahub.herokuapp.com/"]);
 
 const swarm = createSwarm(hub);
 
@@ -40,23 +40,7 @@ btn.onclick = () => {
 	})
 }
 
-var file = document.createElement("input");
-file.type = "file";
-document.body.appendChild(file);
-file.onchange = (e) => {
-	var reader = new FileReader();
-	reader.onload = () => {
-		console.log(reader.result);
-		var obj = new Blob([reader.result]);
-		var url = window.URL.createObjectURL(obj);
-		var a = document.createElement('a');
-		a.href = url;
-		a.text = e.target.files[0].name
-		document.body.appendChild(a);
-	}
-	
-	reader.readAsArrayBuffer(e.target.files[0]);
-}
+
 
 // });
 
