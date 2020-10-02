@@ -2,7 +2,7 @@
 const signalhub = require('signalhub');
 const createSwarm = require('webrtc-swarm');
 
-const room = prompt("room name = ");
+const room = prompt("Room name = ");
 const name = prompt("Name = ")
 
 const hub = signalhub(room, ["https://rtc-saitejahub.herokuapp.com/"]);
@@ -29,7 +29,7 @@ document.body.appendChild(inp);
 
 
 var btn = document.createElement('button');
-btn.innerHTML = "send"
+btn.innerHTML = "Send"
 document.body.appendChild(btn);
 btn.onclick = () => {
 	swarm.peers.forEach((peer) => {
